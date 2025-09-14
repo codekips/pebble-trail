@@ -1,0 +1,65 @@
+## API Design
+
+1. Add a new expense
+URL: POST /v1/expenses
+Request Body:
+{
+    "description": string,
+    "category" : string, (Can be inferred from description at client level, or user could add from set of dropdown)
+    "amount": {
+        "value": number,
+        "currency": string,
+    },
+    "currency": currency_enum ("INR/ USD") (optional),
+    "expense_date": date (optional),
+    "paid_with": {
+        "mode": enum (CASH/ UPI/ CARD)
+        "upi_id" : string, (optional. discarded when mode is not upi. default used when mode is upi, and not provided)
+        "card_id" : string, (optional. discarded when mode is not card. default used when mode is card, and not provided)
+    } (optional)
+}
+Response:
+{
+    "data":
+    "error": ErrorType
+}
+Response status:
+401: Unauthenticated
+201: Created
+
+2. Get all of the user's expenses
+URL: GET /v1/expenses
+QueryParams:
+    pageSize: number (optional, default is 10)
+    offset: number (optional, default is 0)
+    category:
+Response:
+{
+    "data": {
+        "expenses": [ShortExpenseType],
+    },
+    "error": ErrorType
+}
+Response status:
+401: Unauthenticated
+200: Fetched successfully
+
+
+
+
+
+ErrorType
+{
+    "internal_status_code" : string,
+    "message": string
+}
+
+ShortExpenseType
+{
+    "id" : UUID,
+    "description" : string,
+    "amount": {
+        "value": number,
+        "currency": string,
+    }
+},
